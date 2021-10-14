@@ -20,6 +20,7 @@ def test():
 #     return True or False
 
 
+
 @app.route('/gen-pass/')
 def gen_pass():  # length = 20
     query_params = request.args
@@ -41,9 +42,75 @@ def gen_pass():  # length = 20
     return generate_password(length)
 
 
+
+@app.route("/phones/create/")
+def phones_create():
+    query_params = request.args
+    value = (query_params.get('value'))
+
+    import sqlite3
+
+    con = sqlite3.connect('./phones.db')
+    cur = con.cursor()
+    sql = f"""
+    INSERT INTO phones
+    values (null, '{value}')
+    """
+
+    cur.execute(sql)
+    con.commit()
+    con.close()
+    return 'Phone was Created'
+
+@app.route("/phones/delete/")
+def phones_delete():
+    import sqlite3
+
+    con = sqlite3.connect('./phones.db')
+    cur = con.cursor()
+    sql = f"""
+    DELETE FROM phones;
+    """
+    cur.execute(sql)
+    con.commit()
+    con.close()
+    return 'All phones were deleted'
+
+@app.route('/phones/list/')
+def phones_list():
+    import sqlite3
+
+    con = sqlite3.connect("./phones.db")
+    cur = con.cursor()
+    sql = """
+    SELECT * FROM phones;
+    """
+    cur.execute(sql)
+    phones_list = cur.fetchall()
+    con.close()
+    return str(phones_list)
+
+@app.route('/phones/update/')
+def phones_update():
+
+    import sqlite3
+    query_params = request.args
+    value = (query_params.get('value'))
+
+
+    con = sqlite3.connect("./phones.db")
+    cur = con.cursor()
+    sql = f"""
+    UPDATE phones SET value={value};
+    """
+    cur.execute(sql)
+    con.commit()
+    con.close()
+    return 'All phones were updated'
+
+
 if __name__ == '__main__':
     app.run(port='5000')
-
 """
 http://127.0.0.1:5000/gen-pass/?length=20&name=Dima
 http://  127.0.0.1  :5000  /  ?key=value
@@ -82,4 +149,3 @@ http://  127.0.0.1  :5000  /  ?key=value
 stop app in terminal - Ctrl + C
 ыыыыыыыыы
 """
-
